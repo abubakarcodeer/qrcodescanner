@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">QRCodeScanner</string>
+    <string name="app_icon">app icon</string>
+    <string name="gallery_icon">Gallery Icon</string>
+    <string name="flash_icon">Flash Icon</string>
+    <string name="generate">Generate</string>
+    <string name="qr_code_icon">qr code icon</string>
+    <string name="qr_code_generate_icon">qr code generate icon</string>
+    <string name="scanner_box">scanner box</string>
+    <string name="setting">Settings</string>
+    <string name="setting_icon">setting icon</string>
+    <string name="back_arrow_icon">back arrow icon</string>
+    <string name="support">Support</string>
+    <string name="rate_us_icon">rate us icon</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="beep">Beep</string>
+    <string name="beep_when_scan_is_done">Beep when scan is done.</string>
+    <string name="your_best_reward_to_us">Your best reward to us.</string>
+    <string name="share_icon">share icon</string>
+    <string name="share">Share</string>
+    <string name="share_app_with_others">Share</string>
+    <string name="privacy_icon">privacy icon</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="follow_our_policies_that_benefits_you">Follow our policies that benefits you.</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="vibration_when_scan_is_done">Vibration when scan is done.</string>
+    <string name="generate_qr_code">Generate QR Code</string>
+    <string name="enter_text_or_url">Enter text or URL</string>
+    <string name="share_qr_code">Share QR Code</string>
+</resources>

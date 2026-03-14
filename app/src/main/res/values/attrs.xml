@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="splashScreenColor" format="color"/>
+    <attr name="iconColor" format="color"/>
+    <attr name="onBoardingDrawableColor" format="color"/>
+</resources>
