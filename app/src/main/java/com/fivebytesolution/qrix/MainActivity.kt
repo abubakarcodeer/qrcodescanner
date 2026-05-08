@@ -1,4 +1,4 @@
-package com.example.qrcodescanner
+package com.fivebytesolution.qrix
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -25,9 +25,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.qrcodescanner.databinding.ActivityMainBinding
-import com.example.qrcodescanner.databinding.LayoutBottomSheetResultBinding
-import com.example.qrcodescanner.utils.Utils
+import com.fivebytesolution.qrix.databinding.ActivityMainBinding
+import com.fivebytesolution.qrix.databinding.LayoutBottomSheetResultBinding
+import com.fivebytesolution.qrix.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage

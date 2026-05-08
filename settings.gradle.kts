@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "QRCodeScanner"
+rootProject.name = "QRix"
 include(":app")

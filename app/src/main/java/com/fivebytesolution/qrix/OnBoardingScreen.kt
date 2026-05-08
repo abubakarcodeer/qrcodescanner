@@ -1,4 +1,4 @@
-package com.example.qrcodescanner
+package com.fivebytesolution.qrix
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.qrcodescanner.databinding.ActivityOnBoardingScreenBinding
-import com.example.qrcodescanner.utils.Utils
+import com.fivebytesolution.qrix.databinding.ActivityOnBoardingScreenBinding
+import com.fivebytesolution.qrix.utils.Utils
 import androidx.core.content.edit
 
 

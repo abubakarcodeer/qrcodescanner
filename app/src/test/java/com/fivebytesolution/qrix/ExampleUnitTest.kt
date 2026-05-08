@@ -1,4 +1,4 @@
-package com.example.qrcodescanner
+package com.fivebytesolution.qrix
 
 import org.junit.Test
 

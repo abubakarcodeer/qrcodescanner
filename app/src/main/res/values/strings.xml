@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QRCodeScanner</string>
+    <string name="app_name">QRix</string>
     <string name="app_icon">app icon</string>
     <string name="gallery_icon">Gallery Icon</string>
     <string name="flash_icon">Flash Icon</string>
@@ -22,6 +22,7 @@
     <string name="privacy_icon">privacy icon</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="follow_our_policies_that_benefits_you">Follow our policies that benefits you.</string>
+    <string name="privacy_policy_content">Your Privacy Matters\n\n1. Information Collection: We do not collect any personal information while you use our QR code scanner app.\n\n2. Camera Access: The app requires camera access solely to scan QR codes. This data is processed locally on your device.\n\n3. Data Storage: Any scanned data is stored only on your device and is not uploaded to any servers.\n\n4. Third-Party Links: The app may contain links to third-party sites. We are not responsible for their privacy practices.\n\nBy using this app, you agree to our policies.</string>
     <string name="vibrate">Vibrate</string>
     <string name="vibration_when_scan_is_done">Vibration when scan is done.</string>
     <string name="generate_qr_code">Generate QR Code</string>
