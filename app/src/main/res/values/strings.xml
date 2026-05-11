@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">QRix</string>
+    <string name="app_name">ByteScan</string>
     <string name="app_icon">app icon</string>
     <string name="gallery_icon">Gallery Icon</string>
     <string name="flash_icon">Flash Icon</string>
@@ -28,4 +28,11 @@
     <string name="generate_qr_code">Generate QR Code</string>
     <string name="enter_text_or_url">Enter text or URL</string>
     <string name="share_qr_code">Share QR Code</string>
+    <string name="title">Title</string>
+    <string name="message_content_goes_here">Message content goes here.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="scan_result">Scan Result</string>
+    <string name="result_will_appear_here">Result will appear here</string>
+    <string name="open_link">Open Link</string>
 </resources>

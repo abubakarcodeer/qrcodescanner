@@ -1,4 +1,4 @@
-package com.fivebytesolution.qrix
+package com.fivebytesolution.bytescan
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.fivebytesolution.qrix.databinding.ActivityGenerateQrcodeBinding
-import com.fivebytesolution.qrix.utils.Utils
+import com.fivebytesolution.bytescan.databinding.ActivityGenerateQrcodeBinding
+import com.fivebytesolution.bytescan.utils.Utils
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter

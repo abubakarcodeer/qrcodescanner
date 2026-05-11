@@ -1,4 +1,4 @@
-package com.fivebytesolution.qrix
+package com.fivebytesolution.bytescan
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,8 +6,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.fivebytesolution.qrix.databinding.ActivityOnBoardingScreenBinding
-import com.fivebytesolution.qrix.utils.Utils
+import com.fivebytesolution.bytescan.databinding.ActivityOnBoardingScreenBinding
+import com.fivebytesolution.bytescan.utils.Utils
 import androidx.core.content.edit
 
 

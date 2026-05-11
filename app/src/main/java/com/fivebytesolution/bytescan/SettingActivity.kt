@@ -1,4 +1,4 @@
-package com.fivebytesolution.qrix
+package com.fivebytesolution.bytescan
 
 import android.os.Bundle
 import android.content.Intent
@@ -13,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.fivebytesolution.qrix.databinding.ActivitySettingBinding
-import com.fivebytesolution.qrix.utils.Utils
+import com.fivebytesolution.bytescan.databinding.ActivitySettingBinding
+import com.fivebytesolution.bytescan.utils.Utils
 import androidx.core.content.edit
 import androidx.core.net.toUri
+import androidx.core.graphics.drawable.toDrawable
 
 class SettingActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingBinding
@@ -69,7 +70,7 @@ class SettingActivity : AppCompatActivity() {
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 try {
                     startActivity(goToMarket)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     startActivity(Intent(Intent.ACTION_VIEW,
                         "http://play.google.com/store/apps/details?id=$packageName".toUri()))
                 }
@@ -108,7 +109,7 @@ class SettingActivity : AppCompatActivity() {
         builder.setView(dialogView)
         
         val dialog = builder.create()
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
 
         val tvTitle = dialogView.findViewById<TextView>(R.id.dialogTitle)
         val tvMessage = dialogView.findViewById<TextView>(R.id.dialogMessage)

@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "QRix"
+rootProject.name = "ByteScan"
 include(":app")

@@ -1,4 +1,4 @@
-package com.fivebytesolution.qrix.utils
+package com.fivebytesolution.bytescan.utils
 
 import android.app.Activity
 import android.content.Context
@@ -6,7 +6,7 @@ import android.util.TypedValue
 import android.widget.Toast
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import com.fivebytesolution.qrix.R
+import com.fivebytesolution.bytescan.R
 
 class Utils {
    fun bottomNavigationTransparent(activity: Activity){

@@ -1,4 +1,4 @@
-package com.fivebytesolution.qrix
+package com.fivebytesolution.bytescan
 
 import org.junit.Test
 

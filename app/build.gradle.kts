@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.fivebytesolution.qrix"
+    namespace = "com.fivebytesolution.bytescan"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -11,7 +11,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.fivebytesolution.qrix"
+        applicationId = "com.fivebytesolution.bytescan"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
