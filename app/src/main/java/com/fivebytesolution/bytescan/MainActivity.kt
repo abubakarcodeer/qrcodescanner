@@ -25,12 +25,17 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import com.fivebytesolution.bytescan.database.AppDatabase
 import com.fivebytesolution.bytescan.databinding.ActivityMainBinding
 import com.fivebytesolution.bytescan.databinding.LayoutBottomSheetResultBinding
+import com.fivebytesolution.bytescan.model.ScanHistory
 import com.fivebytesolution.bytescan.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +48,9 @@ class MainActivity : AppCompatActivity() {
     private var isFlashOn = false
     private var isBottomSheetShowing = false
 
+    private var pendingWifi: WifiData? = null
+    data class WifiData(val ssid: String, val password: String?, val encryptionType: Int)
+
     private val galleryLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let { scanImageFromUri(it) }
@@ -52,6 +60,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Restore pending WiFi data if process was killed
+        savedInstanceState?.let {
+            val ssid = it.getString("pending_ssid")
+            if (ssid != null) {
+                pendingWifi = WifiData(
+                    ssid,
+                    it.getString("pending_password"),
+                    it.getInt("pending_encryption")
+                )
+            }
+        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         utils.bottomNavigationTransparent(this)
@@ -89,6 +109,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, GenerateQRCodeActivity::class.java))
         }
 
+        binding.historyFab.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
+
         binding.settingBtn.setOnClickListener {
            startActivity(Intent(this, SettingActivity::class.java))
         }
@@ -112,6 +136,16 @@ class MainActivity : AppCompatActivity() {
                 startCamera()
             } else {
                 utils.toast("Camera permission is required for this feature", this)
+            }
+        } else if (requestCode == 200) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                pendingWifi?.let {
+                    utils.connectToWifi(this, it.ssid, it.password, it.encryptionType)
+                    pendingWifi = null
+                }
+            } else {
+                utils.toast("Location permission is required to connect to WiFi", this)
+                pendingWifi = null
             }
         }
     }
@@ -200,11 +234,10 @@ class MainActivity : AppCompatActivity() {
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
-                        barcodes[0].rawValue?.let { value ->
-                            runOnUiThread {
-                                handleScanFeedback()
-                                showResultBottomSheet(value)
-                            }
+                        val barcode = barcodes[0]
+                        runOnUiThread {
+                            handleScanFeedback()
+                            showResultBottomSheet(barcode)
                         }
                     }
                 }
@@ -253,10 +286,9 @@ class MainActivity : AppCompatActivity() {
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
-                        barcodes[0].rawValue?.let { value ->
-                            handleScanFeedback()
-                            showResultBottomSheet(value)
-                        }
+                        val barcode = barcodes[0]
+                        handleScanFeedback()
+                        showResultBottomSheet(barcode)
                     } else {
                         utils.toast("No QR code found in image", this)
                     }
@@ -264,15 +296,20 @@ class MainActivity : AppCompatActivity() {
                 .addOnFailureListener {
                     utils.toast("Failed to scan image", this)
                 }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             utils.toast("Error processing image", this)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun showResultBottomSheet(result: String) {
-        if (isBottomSheetShowing) return
+    private fun showResultBottomSheet(barcode: Barcode) {
+        val result = barcode.rawValue ?: ""
+        if (isBottomSheetShowing || result.isEmpty()) return
         isBottomSheetShowing = true
+
+        lifecycleScope.launch {
+            AppDatabase.getDatabase(this@MainActivity).historyDao().insert(ScanHistory(result = result))
+        }
 
         val bottomSheetDialog = BottomSheetDialog(this)
         val sheetBinding = LayoutBottomSheetResultBinding.inflate(layoutInflater)
@@ -280,23 +317,41 @@ class MainActivity : AppCompatActivity() {
 
         sheetBinding.resultText.text = result
 
-        val isUrl = Patterns.WEB_URL.matcher(result).matches()
-
-        if (isUrl) {
-            sheetBinding.actionBtn.text = "Open Link"
+        if (barcode.valueType == Barcode.TYPE_WIFI) {
+            sheetBinding.actionBtn.text = "Connect to WiFi"
             sheetBinding.actionBtn.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(if (result.startsWith("http")) result else "http://$result"))
-                startActivity(intent)
+                barcode.wifi?.let { wifi ->
+                    val ssid = wifi.ssid ?: ""
+                    val password = wifi.password
+                    val encryptionType = wifi.encryptionType
+                    
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        pendingWifi = WifiData(ssid, password, encryptionType)
+                        utils.connectToWifi(this, ssid, password, encryptionType)
+                    } else {
+                        utils.connectToWifi(this, ssid, password, encryptionType)
+                    }
+                }
                 bottomSheetDialog.dismiss()
             }
         } else {
-            sheetBinding.actionBtn.text = "Copy Text"
-            sheetBinding.actionBtn.setOnClickListener {
-                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Scanned Text", result)
-                clipboard.setPrimaryClip(clip)
-                utils.toast("Text copied to clipboard", this)
-                bottomSheetDialog.dismiss()
+            val isUrl = Patterns.WEB_URL.matcher(result).matches()
+            if (isUrl) {
+                sheetBinding.actionBtn.text = "Open Link"
+                sheetBinding.actionBtn.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(if (result.startsWith("http")) result else "http://$result"))
+                    startActivity(intent)
+                    bottomSheetDialog.dismiss()
+                }
+            } else {
+                sheetBinding.actionBtn.text = "Copy Text"
+                sheetBinding.actionBtn.setOnClickListener {
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Scanned Text", result)
+                    clipboard.setPrimaryClip(clip)
+                    utils.toast("Text copied to clipboard", this)
+                    bottomSheetDialog.dismiss()
+                }
             }
         }
 
@@ -305,6 +360,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         bottomSheetDialog.show()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        pendingWifi?.let {
+            outState.putString("pending_ssid", it.ssid)
+            outState.putString("pending_password", it.password)
+            outState.putInt("pending_encryption", it.encryptionType)
+        }
     }
 
     override fun onDestroy() {

@@ -35,4 +35,8 @@
     <string name="scan_result">Scan Result</string>
     <string name="result_will_appear_here">Result will appear here</string>
     <string name="open_link">Open Link</string>
+    <string name="history">History</string>
+    <string name="no_history_found">No history found</string>
+    <string name="clear_history">Clear History</string>
+    <string name="text_copied">Text copied to clipboard</string>
 </resources>
