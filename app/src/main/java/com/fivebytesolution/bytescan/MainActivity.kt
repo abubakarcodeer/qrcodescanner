@@ -32,6 +32,7 @@ import com.fivebytesolution.bytescan.databinding.LayoutBottomSheetResultBinding
 import com.fivebytesolution.bytescan.model.ScanHistory
 import com.fivebytesolution.bytescan.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
@@ -42,10 +43,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     val utils = Utils()
     private val cameraExecutor = Executors.newSingleThreadExecutor()
+    private val scanner: BarcodeScanner = BarcodeScanning.getClient()
 
     private var camera: Camera? = null
     private val CAMERA_REQUEST = 100
     private var isFlashOn = false
+    @Volatile
     private var isBottomSheetShowing = false
 
     private var pendingWifi: WifiData? = null
@@ -230,7 +233,6 @@ class MainActivity : AppCompatActivity() {
                 imageProxy.imageInfo.rotationDegrees
             )
 
-            val scanner = BarcodeScanning.getClient()
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
@@ -244,6 +246,8 @@ class MainActivity : AppCompatActivity() {
                 .addOnCompleteListener {
                     imageProxy.close()
                 }
+        } else {
+            imageProxy.close()
         }
     }
 
@@ -254,18 +258,20 @@ class MainActivity : AppCompatActivity() {
 
         if (shouldVibrate) {
             val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vibratorManager.defaultVibrator
+                val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vibratorManager?.defaultVibrator
             } else {
                 @Suppress("DEPRECATION")
-                getSystemService(VIBRATOR_SERVICE) as Vibrator
+                getSystemService(VIBRATOR_SERVICE) as? Vibrator
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
-                @Suppress("DEPRECATION")
-                vibrator.vibrate(200)
+            vibrator?.let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    it.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+                } else {
+                    @Suppress("DEPRECATION")
+                    it.vibrate(200)
+                }
             }
         }
 
@@ -282,7 +288,6 @@ class MainActivity : AppCompatActivity() {
     private fun scanImageFromUri(uri: Uri) {
         try {
             val image = InputImage.fromFilePath(this, uri)
-            val scanner = BarcodeScanning.getClient()
             scanner.process(image)
                 .addOnSuccessListener { barcodes ->
                     if (barcodes.isNotEmpty()) {
@@ -374,5 +379,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+        scanner.close()
     }
 }
